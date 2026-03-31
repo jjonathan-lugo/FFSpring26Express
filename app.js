@@ -29,21 +29,58 @@ app.use(express.static(path.join(__dirname, 'public')));
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'))
 hbs.registerPartial('partial_name', 'partial value');
 
-
-
 /* GET home page. */
 app.get('/', function (req, res, next) {
   res.render('index', { title: 'Miami' });
 });
 
+app.get('/page2', function (req, res, next) {
+  res.render('index', { title: 'Page 2' });
+});
+
+app.get('/form', function (req, res, next) {
+  res.render('form', { title: 'Form' });
+});
+
+app.post('/form', function (req, res, next) {
+  console.log(req.body.firstname);
+  //res.render('formerspouse', {firstname:req.body.firstname, lastname:req.body.lastname})
+  res.render('formerspouse', res.body);
+});
+
+app.get('/guess', function (req, res, next) {
+  res.render('guess', { title: 'Guess' });
+});
+
+app.post('/guess', function (req, res, next) {
+  console.log(req.body.firstname);
+  let randomNumber = Math.floor(Math.random() * 10);
+  let response = "";
+  if(randomNumber == Number(req.body.guess)){
+    console.log("You guessed correctly");
+    reponse = "You guesssed correctly"
+  }
+  else {
+    console.log("You guessed incorrectly");
+    response = "You guessed incorrectly";
+  }
+  let templateResponse = {guess: req.body.guess, responseText:response};
+  //res.render('formerspouse', {firstname:req.body.firstname, lastname:req.body.lastname})
+  res.render('guessResponse', templateResponse);
+});
+
+app.get('/:name', function (req, res, next) {
+  console.log(req);
+  res.render('index', { title: req.params.name });
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
